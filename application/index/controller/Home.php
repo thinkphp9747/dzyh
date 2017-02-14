@@ -1,10 +1,42 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use think\Db;
+
 class Home extends Controller
 {
     public function index()
     {
     	return view();    
 	}
+	
+	public function chart()
+	{
+		return view();
+	}
+	
+	 /**
+     * AJAX返回检索数据
+     * @return  $responce       返回json数据
+     */
+    public function json()
+    {
+         
+        // 检索数据库数据
+        $row = Db::name('yg')->select();
+        
+
+        // 转化记录集为json数据格式
+         
+        for ($i = 0; $i < count($row); $i ++) {
+            //$responce->rows[$i]['id'] = trim($row[$i]['id']);
+            $responce[$i]= array(
+                $row[$i]['id'],
+                $row[$i]['username']                
+            );
+        }
+               
+        echo json_encode($responce); // 转化为json数据格式
+        
+    }
 }
