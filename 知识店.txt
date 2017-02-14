@@ -1,0 +1,21 @@
+操作认证权限
+
+控制器将操作员ID赋值给模板。
+    $uid = 1;
+		$this->assign('uid',$uid);
+
+common.php(公共函数文件）增加公共函数
+function authcheck($uid,$t,$f='没有权限'){
+   	if($uid<10){
+   		return $t;
+   	}else{
+   		return false;
+   	}
+}
+
+模板调用公共函数（authcheck)判断是否显示菜单
+         {:authcheck($uid,'<a href="/public/index.php/index/jfpt/index" class="dropdown-toggle">
+					<i class="icon-desktop"></i>
+					<span class="menu-text">管理中心</span>
+					<b class="arrow icon-angle-down"></b>
+  				</a>','')}
