@@ -131,3 +131,8 @@ $sheet0=$objPHPExcel->getSheet(0);
 
         echo "总{$sum}条，成功{$success}条，失败{$error}条。";
 复制代码
+
+缴费平台管理后台
+http://www.ccbjf.com/Managepage/blogin.jsp
+商户管理后台
+http://www.ccbjf.com/Frontpage/service/service_login.jsp
