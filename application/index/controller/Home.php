@@ -2,6 +2,7 @@
 namespace app\index\controller;
 use think\Controller;
 use think\Db;
+
 /**
  * 缴费平台控制器
  */
@@ -36,50 +37,49 @@ class Home extends Controller
 	 /**
 	  * 缴费平台数据导入
 	  */
+  
 	public function putjfsj()
 	{
-		 $file = request()->file('jfsj');
+		 $file = request()->file('import');
 	    // 移动到框架应用根目录/public/uploads/ 目录下
-	    $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+	    $info = $file->rule('uniqid')->move(ROOT_PATH . 'public' . DS . 'uploads','jfsj.xlsx');
 	    if($info){
 	        // 成功上传后 获取上传信息
-	        // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
-	        $filepath = "/public/uploads/".$info->getSaveName();
+	       
+	        $filepath = $info->getFilename();
 			
 			//引入PHPExcel类库
-			require_once '/public/PHPExcel/IOFactory.php';
-			
-			//获取excel文件
-			$objPHPExcel = \PHPExcel_IOFactory::load("$filepath");
-			$objPHPExcel->setActiveSheetIndex(0);
-			$sheet0=$objPHPExcel->getSheet(0);	
-			
-			//获取行数，并把数据读取出来$data数组
-			$rowCount=$sheet0->getHighestRow();//excel行数
-	        $data=array();
-	        for ($i = 2; $i <= $rowCount; $i++){
-	            $item['name']=$this->getExcelValue($sheet0,'A'.$i);
-	            $item['sex']=$this->getExcelValue($sheet0,'B'.$i);
-	            $item['contact']=$this->getExcelValue($sheet0,'C'.$i);
-	            $item['remark']=$this->getExcelValue($sheet0,'D'.$i);
-	            $item['addtime']=$this->getExcelValue($sheet0,'E'.$i);
 	
-	            $data[]=$item;
-	        }	
+			include_once '/PHPExcel/IOFactory.php';
 			
-			//保存到数据
-			$success=0;
-			$error=0;
-			$sum=count($data);
-			foreach($data as $k=>$v){
-			    if(M('temp_area3')->data($v)->add()){
-			        $success++;
-			    }else {
-			        $error++;
-			        }
-			    }
+//			//获取excel文件
+			$objPHPExcel = \PHPExcel_IOFactory::load("D:/wamp/www/public/uploads/".$filepath);//加载文件
+			//sheetCount = $objPHPExcel->getSheetCount();//获取excel文件里有多少sheet
+			$data=$objPHPExcel->getSheet(0)->toArray();
+
+			$ac = count($data);
+			for ($i=5;$i<$ac;$i++){
+				$cell[$i][0]=$data[$i][1];
+				$cell[$i][1]=$data[$i][4];
+			}
 			
-			        echo "总{$sum}条，成功{$success}条，失败{$error}条。";
+					
+			$this->assign("var",$cell);			
+			return $this->fetch("test");
+			
+//			$objPHPExcel->setActiveSheetIndex(0);
+//			$sheet0=$objPHPExcel->getSheet(0);	
+//			$i=0;
+//			//获取行数，并把数据读取出来$data数组
+//			foreach($sheet0->getRowIterator() as $row){//逐行处理
+//				if($row->getRowIndex()<5){
+//					continue;
+//				}
+//				$data[$i]=$row->getCellIterator($i)->getValue();
+//				$i=$i+1;
+//				$data[$i]=$row->getCell(4)->getValue();
+//				$i=$i+1;
+//			}
 			
 	        
 	    }else{
