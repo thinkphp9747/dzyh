@@ -90,7 +90,7 @@ array(status->0,info=>'可以说明出错的原因',....)
 二、获取Excel数据
 
   1.首先需要引入PHPExcel的类库
-
+include_once '/phpexcel/phpexcel.php';
 require_once 'module/PHPExcel/Classes/PHPExcel/IOFactory.php';
   2.获取Excel第0张表即（Sheet1）
 
