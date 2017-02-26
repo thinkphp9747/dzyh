@@ -53,35 +53,34 @@ class Home extends Controller
 			include_once '/PHPExcel/IOFactory.php';
 			
 //			//获取excel文件
+			
 			$objPHPExcel = \PHPExcel_IOFactory::load("D:/wamp/www/public/uploads/".$filepath);//加载文件
 			//sheetCount = $objPHPExcel->getSheetCount();//获取excel文件里有多少sheet
 			$data=$objPHPExcel->getSheet(0)->toArray();
 
 			$ac = count($data);
 			for ($i=5;$i<$ac;$i++){
-				$cell[$i][0]=$data[$i][1];
-				$cell[$i][1]=$data[$i][4];
+				
+				$cell[]=array(
+					'id'=>$data[$i][1],
+					'username'=>$data[$i][0],
+					'jgbh'=>$data[$i][1],
+					'password'=>$data[$i][4]
+				);
 			}
-			
 					
-			$this->assign("var",$cell);			
-			return $this->fetch("test");
-			
-//			$objPHPExcel->setActiveSheetIndex(0);
-//			$sheet0=$objPHPExcel->getSheet(0);	
-//			$i=0;
-//			//获取行数，并把数据读取出来$data数组
-//			foreach($sheet0->getRowIterator() as $row){//逐行处理
-//				if($row->getRowIndex()<5){
-//					continue;
-//				}
-//				$data[$i]=$row->getCellIterator($i)->getValue();
-//				$i=$i+1;
-//				$data[$i]=$row->getCell(4)->getValue();
-//				$i=$i+1;
-//			}
-			
-	        
+			$result = Db::name('yg')->insertAll($cell);	
+			 if ($result) {                                               // 验证
+
+                    $this->success("导入成功", "index");// 跳转首页页面
+
+                } else {
+
+                    $this->error("导入失败，原因可能是excel表中有些用户已被注册。或表格格式错误","5");// 提示错误
+
+                }
+					
+			     
 	    }else{
 	        // 上传失败获取错误信息
 	        echo $file->getError();

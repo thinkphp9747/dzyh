@@ -127,3 +127,149 @@ All rights reserved。
 ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
 
 更多细节参阅 [LICENSE.txt](LICENSE.txt)
+
+
+============================================================
+
+
+phpexcel导入数据库 基于thinkphp3.2
+    public function studentImportExcel(){   
+
+        if (!empty ( $_FILES)){
+
+            $upload = new \Think\Upload();                      // 实例化上传类
+
+            $upload->maxSize   =     10485760 ;                 // 设置附件上传大小
+
+            $upload->exts      =     array('xls','xlsx');       // 设置附件上传类型
+
+            $upload->rootPath  = './Public/Excel/';             // 设置附件上传根目录
+
+            $upload->autoSub   = false;                         // 将自动生成以photo后面加时间的形式文件夹，关闭
+
+            
+
+            // 上传文件
+
+            $info   =   $upload->upload();                                   // 上传文件
+
+            $exts   = $info['excel']['ext'];                                 // 获取文件后缀
+
+            $filename = $upload->rootPath.$info['excel']['savename'];        // 生成文件路径名
+
+            if(!$info) {                                                     // 上传错误提示错误信息
+
+                $this->error($upload->getError()); 
+
+            }else{                                                           // 上传成功
+
+                import("Org.Util.PHPExcel");                                 // 导入PHPExcel类库，因为PHPExcel没有用命名空间，只能inport导入
+
+                $PHPExcel = new \PHPExcel();                                 // 创建PHPExcel对象，注意，不能少了\
+
+                if ($exts == 'xls') {                                        // 如果excel文件后缀名为.xls，导入这个类
+
+                    import("Org.Util.PHPExcel.Reader.Excel5");
+
+                    $PHPReader = new \PHPExcel_Reader_Excel5();
+
+                } else 
+
+                    if ($exts == 'xlsx') {
+
+                        import("Org.Util.PHPExcel.Reader.Excel2007");
+
+                        $PHPReader = new \PHPExcel_Reader_Excel2007();
+
+                    }
+
+ 
+
+                $PHPExcel = $PHPReader->load($filename);                     // 载入文件
+
+                $currentSheet = $PHPExcel->getSheet(0);                      // 获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
+
+                $allColumn = $currentSheet->getHighestColumn();              // 获取总列数
+
+                $allRow = $currentSheet->getHighestRow();                    // 获取总行数
+
+                for ($currentRow = 0; $currentRow <= $allRow; $currentRow ++) {// 循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
+
+                    for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn ++) {// 从哪列开始，A表示第一列
+
+                        $address = $currentColumn . $currentRow;             // 数据坐标
+
+                        $ExlData[$currentRow][$currentColumn] = $currentSheet->getCell($address)->getValue();// 读取到的数据，保存到数组$arr中
+
+                    }
+
+                }
+
+                $Hint = new \Operation\Controller\HintController();          // 生成操作类对象
+
+                $data = studentImportExcel_RAW($ExlData);                    // 调用公用方法的读数组并写入数据库操作
+
+                $users = M('users');                                         // 生成数据库对象
+
+                $result = $users->addAll($data);                             // 批量写入数据库  
+
+                if ($result) {                                               // 验证
+
+                    $Hint->mysuccee("导入成功", "2", "Admin/Users/studentManage");// 跳转学生管理页面
+
+                } else {
+
+                    $Hint->myerror("导入失败，原因可能是excel表中有些用户已被注册。或表格格式错误","5");// 提示错误
+
+                }
+
+            }
+
+        }else {
+
+          $this->display(); 
+
+        }    
+
+                
+
+}
+
+ 
+
+function  studentImportExcel_RAW($ExlData){   // 将导入表中的数据添加到  数据库数组中去
+
+    $Hint = new \Operation\Controller\HintController();     // 生成操作类对象
+
+    for($i = 2,$j=0;$i<sizeof($ExlData);$i++,$j++){
+
+        $dataList[] = array(
+
+            'username'=>$ExlData[$i]['A'],
+
+            'pwd'     =>MD5(11),
+
+            'realname'=>$ExlData[$i]['B'],
+
+            'stunum'  =>$ExlData[$i]['C'],
+
+            'email'   =>$ExlData[$i]['D'],
+
+            'phone'   =>$ExlData[$i]['E'],
+
+            'photo'   =>$Hint->randPhoto(),
+
+            'role'    =>'1',
+
+            'intro'   =>'这家伙很懒什么都没留下',
+
+            'regdate' =>date('Y-m-d H:i:s', time())         // 写入注册时间
+
+        );
+
+    }
+
+    return $dataList;
+
+}
+
