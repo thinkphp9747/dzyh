@@ -68,7 +68,7 @@ class Home extends Controller
 	{
 		 $file = request()->file('import');
 	    // 移动到框架应用根目录/public/uploads/ 目录下
-	    $info = $file->rule('uniqid')->move(ROOT_PATH . 'public' . DS . 'uploads','jfsj.xlsx');
+	     $info = $file->rule('uniqid')->move(ROOT_PATH . 'public' . DS . 'uploads','jfsj.xlsx');
 	    if($info){
 	        // 成功上传后 获取上传信息
 	       
@@ -83,12 +83,12 @@ class Home extends Controller
 			$objPHPExcel = \PHPExcel_IOFactory::load("D:/wamp/www/public/uploads/".$filepath);//加载文件
 			//sheetCount = $objPHPExcel->getSheetCount();//获取excel文件里有多少sheet
 			$data=$objPHPExcel->getSheet(0)->toArray();
-
+			$sj=date("Y-m-d");
 			$ac = count($data);
-			for ($i=5;$i<$ac;$i++){
+			for ($i=3;$i<$ac;$i++){
 				
 				$cell[]=array(
-					'sjdate'=>date('Y-M-D'),
+					'sjdate'=>$sj,
 					'shbh'=>$data[$i][0],
 					'shlb'=>$data[$i][1],
 					'wsjyl'=>$data[$i][10],
@@ -142,17 +142,17 @@ class Home extends Controller
 			$data=$objPHPExcel->getSheet(0)->toArray();
 
 			$ac = count($data);
-			for ($i=5;$i<$ac;$i++){
+			for ($i=7;$i<$ac;$i++){
 				
 				$cell[]=array(
 					'jgbh'=>$data[$i][1],
-					'cpjf'=>$data[$i][46],
-					'sjjf'=>$data[$i][65],
-					'yxjf'=>$data[$i][66],
-					'jtfmjf'=>$data[$i][68],
-					'dfjf'=>$data[$i][72],
-					'sfjf'=>$data[$i][73],
-					'sjdate'=>date('Y-M-D')
+					'cpjf'=>$data[$i][50],
+					'sjjf'=>$data[$i][70],
+					'yxjf'=>$data[$i][71],
+					'jtfmjf'=>$data[$i][73],
+					'dfjf'=>$data[$i][77],
+					'sfjf'=>$data[$i][78],
+					'sjdate'=>date("Y-m-d")
 				);
 			}
 					
