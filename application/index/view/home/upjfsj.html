@@ -1,20 +1,44 @@
 {extend name="base" /}
 {block name="pagestyles"}
-	<link rel="stylesheet" href="/public/assets/css/dropzone.css" />
+	<link rel="stylesheet" href="/public/assets/css/bootstrap.file-input.css" />
 {/block}
 {block name="incss"}内联CSS脚本{/block}
 {block name="content"}
-	<div id="dropzone">
-		 <form action="{:url('putjfsj')}" method="post" enctype="multipart/form-data">
-            <input type="file" name="import"/>
-            <input type="hidden" name="table" value="tablename"/>
-            <input type="submit" value="导入"/>
-        </form>
-	</div>
+	<div class="col-sm-2">
+		</div>
+		<div class="col-sm-8">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h4>缴费平台数据导入</h4>
+				<span class="widget-toolbar">
+					<a href="#" data-action="collapse">
+						<i class="icon-chevron-up"></i>
+					</a>
+					<a href="#" data-action="close">
+						<i class="icon-remove"></i>
+					</a>
+				</span>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main">
+					<form action="{:url('putjfsj')}" method="post" enctype="multipart/form-data">
+						<p>
+						<input type="file" id="file" name="import" class="custom-file-input">
+						</p>
+						<p>
+						<input type="submit" class="btn btn-success"></input>
+						</p>
+        			</form>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="col-sm-2">
+		</div>
 {/block}
 
 {block name="pagescripts"}
-	
+	<script src="/public/assets/js/bootstrap.file-input.js"></script>
 {/block}
 
 {block name="inscripts"}

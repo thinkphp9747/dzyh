@@ -366,14 +366,7 @@
 								<span class="menu-text"> 主页 </span>
 							</a>
 						</li>
-						{gt name="ygid" value="5"}
-						<li>
-							<a href="typography.html">
-								<i class="icon-text-width"></i>
-								<span class="menu-text"> Typography </span>
-							</a>
-						</li>
-						{/gt}
+						
 						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-desktop"></i>
@@ -405,7 +398,7 @@
 								</li>
 
 								<li>
-									<a href="jquery-ui.html">
+									<a href={:url("home/upyshsj")}>
 										<i class="icon-double-angle-right"></i>
 										悦生活数据上传
 									</a>
@@ -454,7 +447,7 @@
 						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-list"></i>
-								<span class="menu-text"> Tables </span>
+								<span class="menu-text"> 待开发 </span>
 
 								<b class="arrow icon-angle-down"></b>
 							</a>
@@ -478,74 +471,8 @@
 
 						<li>
 							<a href="#" class="dropdown-toggle">
-								<i class="icon-edit"></i>
-								<span class="menu-text"> Forms </span>
-
-								<b class="arrow icon-angle-down"></b>
-							</a>
-
-							<ul class="submenu">
-								<li>
-									<a href="form-elements.html">
-										<i class="icon-double-angle-right"></i>
-										Form Elements
-									</a>
-								</li>
-
-								<li>
-									<a href="form-wizard.html">
-										<i class="icon-double-angle-right"></i>
-										Wizard &amp; Validation
-									</a>
-								</li>
-
-								<li>
-									<a href="wysiwyg.html">
-										<i class="icon-double-angle-right"></i>
-										Wysiwyg &amp; Markdown
-									</a>
-								</li>
-
-								<li>
-									<a href="dropzone.html">
-										<i class="icon-double-angle-right"></i>
-										Dropzone File Upload
-									</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="widgets.html">
-								<i class="icon-list-alt"></i>
-								<span class="menu-text"> Widgets </span>
-							</a>
-						</li>
-
-						<li>
-							<a href="calendar.html">
-								<i class="icon-calendar"></i>
-
-								<span class="menu-text">
-									Calendar
-									<span class="badge badge-transparent tooltip-error" title="2&nbsp;Important&nbsp;Events">
-										<i class="icon-warning-sign red bigger-130"></i>
-									</span>
-								</span>
-							</a>
-						</li>
-
-						<li>
-							<a href="gallery.html">
-								<i class="icon-picture"></i>
-								<span class="menu-text"> Gallery </span>
-							</a>
-						</li>
-
-						<li>
-							<a href="#" class="dropdown-toggle">
 								<i class="icon-tag"></i>
-								<span class="menu-text"> More Pages </span>
+								<span class="menu-text"> 待开发 </span>
 
 								<b class="arrow icon-angle-down"></b>
 							</a>
@@ -600,7 +527,7 @@
 								<i class="icon-file-alt"></i>
 
 								<span class="menu-text">
-									Other Pages
+									待开发
 									<span class="badge badge-primary ">5</span>
 								</span>
 
@@ -665,13 +592,13 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="icon-home home-icon"></i>
-								<a href="#">Home</a>
+								<a href="#">{$module}</a>
 							</li>
 
 							<li>
-								<a href="#">Other Pages</a>
+								<a href="#">{$controller}</a>
 							</li>
-							<li class="active">Blank Page</li>
+							<li class="active">{$action}</li>
 						</ul><!-- .breadcrumb -->
 
 						<div class="nav-search" id="nav-search">
