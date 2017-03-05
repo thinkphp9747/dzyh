@@ -237,5 +237,154 @@ class Home extends Controller
 	$this->success("下载成功", "index");// 跳转首页页面
  }
 
+/**
+ * 输出对标擂台赛缴费平台通报表
+ */
+ public function down_dbtb1()
+ {
+ 	$dir=dirname(__FILE__);//查找当前脚本所在路径	
+ 	include_once '/PHPExcel.php';//引入PHPExcel类库
+	$objPHPExcel = new \PHPExcel();//实例化PHPExcel类
+	$objSheet=$objPHPExcel->getActiveSheet();//获取活动工作表
+	//设置表缺省格式为水平、垂直居中
+	$objSheet->getDefaultStyle()->getAlignment()
+		->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER)
+		->SetHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objSheet->getStyle("A1:Z1")->getFont()->setName("微软雅黑")->setSize(20)->setBold(True);
+	$objSheet->getStyle("A3:Z5")->getFont()->setName("微软雅黑")->setSize(11)->setBold(True);
+	
+	$row = Db::name('bgsc')->where('dbzb < 20' )->select();//获取数据
+	
+	//Merge cells 合并分离单元格  
+	$objSheet->mergeCells('A1:N1');
+	$objSheet->setCellValue("A1","对标擂台赛缴费平台通报表2017");
+	$objSheet->setCellValue("A2","说明：******************");
+	//设置表头合并单元格
+	$objSheet->mergeCells('A3:A5')
+			->mergeCells('B3:B5')
+			->mergeCells('C3:C5')
+			->mergeCells('D3:D5')
+			->mergeCells('E3:H3')
+			->mergeCells('E4:E5')
+			->mergeCells('F4:F5')
+			->mergeCells('G4:G5')
+			->mergeCells('H4:H5')
+			->mergeCells('I3:N3')
+			->mergeCells('I4:I5')
+			->mergeCells('J4:J5')
+			->mergeCells('K4:K5')
+			->mergeCells('L4:L5')
+			->mergeCells('M4:M5')
+			->mergeCells('N4:N5');
+	//填充表头背景颜色
+	$objSheet->getStyle('A3:N5')
+		->getFill()
+		->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)
+		->getStartColor()->setRGB('d9ead3');
+	$gradeBorder=$this->getBorderStyle("090909");//获取年级边框样式代码
+	$objSheet->getStyle("A3:N42")
+		->applyFromArray($gradeBorder);//设置每个年级的边框
+	$objSheet->getStyle(3)->getAlignment()->setWrapText(true);//设置文字自动换行
+	$objSheet->setCellValue("A3","组别")
+		->setCellValue("B3","机构名称")
+		->setCellValue("C3","缴费平台\n活跃户")
+		->setCellValue("D3","缴费平台\n缴费笔数")
+		->setCellValue("E3","缴费平台户数")
+		->setCellValue("E4","合计")
+		->setCellValue("F4","已上线")
+		->setCellValue("G4","待省行审批")
+		->setCellValue("H4","已组织材料\n待上报")
+		->setCellValue("I3","行业应用缴费")
+		->setCellValue("I4","电费")
+		->setCellValue("J4","交通罚没")
+		->setCellValue("K4","通讯费")
+		->setCellValue("L4","彩票站点充值")
+		->setCellValue("M4","水费")
+		->setCellValue("N4","有线电视");
+	
+	$j=6;
+	foreach($row as $key=>$val){
+		$objSheet->setCellValue("A".$j,$val['dbzb'])
+			->setCellValue("B".$j,$val['jgname'])
+			->setCellValue("C".$j,$val['活跃户数'])
+			->setCellValue("D".$j,$val['缴费平台缴费笔数'])
+			->setCellValue("E".$j,$val['合计'])
+			->setCellValue("F".$j,$val['已上线'])
+			->setCellValue("G".$j,$val['正在审批'])
+			->setCellValue("H".$j,$val['储备'])
+			->setCellValue("I".$j,$val['电费'])
+			->setCellValue("J".$j,$val['交通罚没'])
+			->setCellValue("K".$j,$val['通讯费'])
+			->setCellValue("L".$j,$val['彩票站点缴费'])
+			->setCellValue("M".$j,$val['水费'])
+			->setCellValue("N".$j,$val['有线费']);
+			$j++;
+	}
+	$objWrite=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');//生成Excel文件
+	//$objWrite->save("D:/wamp/www/public/uploads/export_2.xls");//保存文件
+	$this->browser_export('Excel5','browser_excel.xls');//输出到浏览器
+	$objWrite->save("php://output");
+ }
+
+	/**
+	 * 输出对标擂台赛缴费平台通报表
+	 */
+	public function down_dbtb(){
+		$dir=dirname(__FILE__);//查找当前脚本所在路径	
+	 	include_once '/PHPExcel.php';//引入PHPExcel类库
+		$objPHPExcel = \PHPExcel_IOFactory::load('D:/wamp/www/public/uploads/tb_template.xls');//打开Excel模板
+		$objSheet=$objPHPExcel->getActiveSheet('40机构');//获取活动工作表
+		$row = Db::name('bgsc')->where('dbzb < 40' )->select();//获取数据
+		$j=7;
+		foreach($row as $key=>$val){
+			$objSheet->setCellValue("F".$j,$val['活跃户数'])
+				->setCellValue("G".$j,$val['缴费平台缴费笔数'])
+				->setCellValue("H".$j,$val['合计'])
+				->setCellValue("I".$j,$val['已上线'])
+				->setCellValue("J".$j,$val['正在审批'])
+				->setCellValue("K".$j,$val['储备'])
+				->setCellValue("N".$j,$val['电费'])
+				->setCellValue("P".$j,$val['交通罚没'])
+				->setCellValue("R".$j,$val['通讯费'])
+				->setCellValue("T".$j,$val['彩票站点缴费'])
+				->setCellValue("V".$j,$val['水费'])
+				->setCellValue("X".$j,$val['有线费']);
+				$j++;
+		}
+		$objWrite=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');//生成Excel文件
+			//$objWrite->save("D:/wamp/www/public/uploads/export_2.xls");//保存文件
+		$this->browser_export('Excel5','browser_excel.xls');//输出到浏览器
+		$objWrite->save("php://output");
+	}
+	/**
+	 * 生成Excel文件输出到浏览器
+	 */
+	function browser_export($type,$filename){
+		
+		if($type=="Excel5"){
+			header('Content-Type:application/vnd.ms-excel');//告诉浏览器将要输出excel03文件
+		}else{
+			header('Content-Type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器将要输出Excel07文件
+		}
+		header('Content-Disposition:attachment;filename="'.$filename.'"');//告诉浏览器将输出文件的名称
+		header('Cache-Control:max-age=0');//禁止缓存
+	}
+	/**
+	**获取边框样式代码
+	**/
+		function getBorderStyle($color){
+				$styleArray = array(
+					'borders' => array(
+						'allborders' => array(
+							'style' => \PHPExcel_Style_Border::BORDER_THIN,
+							'color' => array('rgb' => $color),
+						),
+						
+						
+					),
+				);
+				return $styleArray;
+		}
+
 
 }
