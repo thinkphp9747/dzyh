@@ -1,3 +1,5 @@
+*************数据库视图*************************
+
 select `sjtb_jg`.`jgbh` AS `jgbh`,`sjtb_jg`.`jgname` AS `jgname`,`sjtb_jfhy`.`活跃户数` AS `活跃户数`,`sjtb_jfhy`.`缴费平台缴费笔数` AS `缴费平台缴费笔数`,`sjtb_jfpt`.`合计` AS `合计`,`sjtb_jfpt`.`已上线` AS `已上线`,`sjtb_jfpt`.`正在审批` AS `正在审批`,`sjtb_jfpt`.`储备` AS `储备`,`sjtb_ysh`.`电费` AS `电费`,`sjtb_ysh`.`交通罚没` AS `交通罚没`,`sjtb_ysh`.`通讯费` AS `通讯费`,`sjtb_ysh`.`彩票站点缴费` AS `彩票站点缴费`,`sjtb_ysh`.`水费` AS `水费`,`sjtb_ysh`.`有线费` AS `有线费`,`sjtb_jg`.`dbzb` AS `dbzb` from (((`sjtb_jg` left join `sjtb_jfhy` on((`sjtb_jg`.`jgbh` = `sjtb_jfhy`.`jgbh`))) left join `sjtb_jfpt` on((`sjtb_jg`.`jgbh` = `sjtb_jfpt`.`jgbh`))) left join `sjtb_ysh` on((`sjtb_jg`.`jgbh` = `sjtb_ysh`.`机构编号`))) order by `sjtb_jg`.`dbzb`
 
 select `sjtb_jfptsh`.`jgbh` AS `jgbh`,sum(`sjtb_jfptsj`.`wsjyl`) AS `缴费平台缴费笔数`,sum((case when (`sjtb_jfptsj`.`wsjyl` < 150) then 0 when ((`sjtb_jfptsj`.`wsjyl` > 149) and (`sjtb_jfptsj`.`wsjyl` < 1500)) then 1 when ((`sjtb_jfptsj`.`wsjyl` > 1499) and (`sjtb_jfptsj`.`wsjyl` < 15000)) then 2 when ((`sjtb_jfptsj`.`wsjyl` > 14999) and (`sjtb_jfptsj`.`wsjyl` < 150000)) then 4 when (`sjtb_jfptsj`.`wsjyl` > 149999) then 8 end)) AS `活跃户数` from (`sjtb_jfptsh` join `sjtb_jfptsj` on((`sjtb_jfptsh`.`shbh` = `sjtb_jfptsj`.`shbh`))) group by `sjtb_jfptsh`.`jgbh`
@@ -8,11 +10,31 @@ select `sjtb_jfptsh`.`jgbh` AS `jgbh`,count(0) AS `合计`,sum((case when (`sjtb
 
 select `sjtb_jg`.`jgbh` AS `机构编号`,`sjtb_jg`.`jgname` AS `机构名称`,`sjtb_yshsj`.`cpjf` AS `彩票站点缴费`,`sjtb_yshsj`.`sjjf` AS `通讯费`,`sjtb_yshsj`.`yxjf` AS `有线费`,`sjtb_yshsj`.`jtfmjf` AS `交通罚没`,`sjtb_yshsj`.`dfjf` AS `电费`,`sjtb_yshsj`.`sfjf` AS `水费` from (`sjtb_yshsj` join `sjtb_jg` on((`sjtb_yshsj`.`jgbh` = `sjtb_jg`.`ysh_jgh`)))
 
+******************bootstrp form表单提交方式**************************
+
+function checkUser(){
+   var result = document.getElementById("userid").value;
+   var password = document.getElementById("passid").value;
+
+   if(result == ""  ){
+     alert("用户名不能为空");
+     return false;
+   }
+   if(password == ""  ){
+    alert("密码不能为空");
+     return false;
+   }
+  document.getElementById("formid").submit();
+}
+
+form表格的写法，需要写id
+ <form id="formid" method = 'post'  action = 'user_login_submit.action'  >
+
+button按钮的写法如下：
+<input type="button" value="" class="btn2" onclick = "checkUser();" />
 
 
-
-
-操作认证权限
+******************************操作认证权限************************
 
 控制器将操作员ID赋值给模板。
     $uid = 1;
