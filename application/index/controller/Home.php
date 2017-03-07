@@ -21,6 +21,45 @@ class Home extends Controller
 		 $this->assign('action',$request->action());
     	return view();    
 	}
+	
+	
+	/**
+	 * 缴费平台营销登记
+	 */
+	 public function jfptyxdj()
+	 {
+	 	$this->assign('ygid',1);
+		$request = Request::instance();
+		 $this->assign('module',$request->module());
+		 $this->assign('controller',$request->controller());
+		 $this->assign('action',$request->action());
+		return view();
+	 }
+	
+	/**
+	 * 缴费平台营销登记到数据库
+	 */
+	 public function writejfptyxdj()
+	 {
+	 	$post = input('post.');
+
+		dump($post);
+	 }
+	 
+	/**
+	 * 缴费平台商户列表查询
+	 */
+	 public function jfsh_search()
+	 {
+	 	$this->assign('ygid',1);
+		$request = Request::instance();
+		 $this->assign('module',$request->module());
+		 $this->assign('controller',$request->controller());
+		 $this->assign('action',$request->action());
+		return view();
+	 }
+		 
+	
 	/**
 	 * 通报数据图表显示
 	 */
