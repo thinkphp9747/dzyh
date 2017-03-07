@@ -8,16 +8,22 @@ use think\Request;
  */
 class Home extends Controller
 {
+	public function __construct(){
+		 parent::__construct();
+		  $this->assign('ygid',10);
+		 $request = Request::instance();
+		 $this->assign('module',$request->module());
+		 $this->assign('controller',$request->controller());
+	}
+	
 	
 	/**
 	 * 缴费平台主页
 	 */
     public function index()
     {
-    	 $this->assign('ygid',10);
+    	
 		 $request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
 		 $this->assign('action',$request->action());
     	return view();    
 	}
@@ -28,10 +34,7 @@ class Home extends Controller
 	 */
 	 public function jfptyxdj()
 	 {
-	 	$this->assign('ygid',1);
-		$request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
+	 	$request = Request::instance();
 		 $this->assign('action',$request->action());
 		return view();
 	 }
@@ -51,10 +54,7 @@ class Home extends Controller
 	 */
 	 public function jfsh_search()
 	 {
-	 	$this->assign('ygid',1);
-		$request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
+	 	$request = Request::instance();
 		 $this->assign('action',$request->action());
 		return view();
 	 }
@@ -65,10 +65,7 @@ class Home extends Controller
 	 */
 	public function chart()
 	{
-		$this->assign('ygid',1);
 		$request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
 		 $this->assign('action',$request->action());
 		return view();
 	}
@@ -78,10 +75,7 @@ class Home extends Controller
 	 */
 	 public function upjfsj()
 	 {
-	 	$this->assign('ygid',1);
-		$request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
+	 	$request = Request::instance();
 		 $this->assign('action',$request->action());
 		return view();
 	 }
@@ -91,10 +85,7 @@ class Home extends Controller
 	 */
 	 public function upyshsj()
 	 {
-	 	$this->assign('ygid',1);
-		$request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
+	 	$request = Request::instance();
 		 $this->assign('action',$request->action());
 		return view();
 	 }
