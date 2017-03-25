@@ -3,18 +3,32 @@ namespace app\index\controller;
 use think\Controller;
 use think\Db;
 use think\Request;
+use app\index\validate\Jfptsh;
+use app\index\model\Yg;
 /**
  * 缴费平台控制器
  */
 class Home extends Controller
 {
 	public function __construct(){
-		 parent::__construct();
-		  $this->assign('ygid',10);
-		 $request = Request::instance();
-		 $this->assign('module',$request->module());
-		 $this->assign('controller',$request->controller());
+		// 调用父类构造函数(必须)
+		parent::__construct();
+		// 验证用户是否登陆
+      if (!Yg::isLogin()) {
+          return $this->error('请先登录*****', url('index/index'));
+      }
+		
+		$request = Request::instance();
+		$this->assign('module',$request->module());
+		$this->assign('controller',$request->controller());
+		$name = session('name');
+		$this->assign('name',$name);
 	}
+	
+	public function testModel(){
+		 echo sha1(md5('123456') . 'mengyunzhi');
+	}
+	
 	
 	
 	/**
@@ -44,9 +58,21 @@ class Home extends Controller
 	 */
 	 public function writejfptyxdj()
 	 {
-	 	$post = input('post.');
 
-		dump($post);
+	 	$post = input('post.');
+		$jfptsh = new jfptsh;
+		if(!$jfptsh->check($post)){
+			dump($jfptsh->getError());
+		}else{
+			$post['jgbh'] = session('jgbh');
+			$post['yxjd'] = 0;
+			$post['sbtime'] = Date("y-m-d");
+			
+			$id = Db::name('jfptsh')->insertGetId($post);
+			$data = array("id"=>$id);
+			echo json_encode($data);
+
+		}
 	 }
 	 
 	/**
@@ -239,21 +265,21 @@ class Home extends Controller
  {
  	include_once '/PHPWord.php';
 	$PHPWord = new \PHPWord();
-	$document = $PHPWord->loadTemplate("D:/wamp/www/public/uploads/PHP.docx");
+	$document = $PHPWord->loadTemplate("D:/wamp/www/public/uploads/yshtemple.docx");
 	
-	$document->setValue('Value1', 'Sun');
-	$document->setValue('Value2', 'Mercury');
-	$document->setValue('Value3', 'Venus');
-	$document->setValue('Value4', 'Earth');
-	$document->setValue('Value5', 'Mars');
-	$document->setValue('Value6', 'Jupiter');
-	$document->setValue('Value7', 'Saturn');
-	$document->setValue('Value8', 'Uranus');
-	$document->setValue('Value9', 'Neptun');
-	$document->setValue('Value10', 'Pluto');
-	
-	$document->setValue('weekday', date('l'));
-	$document->setValue('time', date('H:i'));
+//	$document->setValue('Value1', 'Sun');
+//	$document->setValue('Value2', 'Mercury');
+//	$document->setValue('Value3', 'Venus');
+//	$document->setValue('Value4', 'Earth');
+//	$document->setValue('Value5', 'Mars');
+//	$document->setValue('Value6', 'Jupiter');
+//	$document->setValue('Value7', 'Saturn');
+//	$document->setValue('Value8', 'Uranus');
+//	$document->setValue('Value9', 'Neptun');
+//	$document->setValue('Value10', 'Pluto');
+//	
+//	$document->setValue('weekday', date('l'));
+//	$document->setValue('time', date('H:i'));
 	
 	$document->save('D:/wamp/www/public/uploads/test.docx');
  	$filename=realpath("D:/wamp/www/public/uploads/test.docx"); //文件名
@@ -381,6 +407,18 @@ class Home extends Controller
 				->setCellValue("X".$j,$val['有线费']);
 				$j++;
 		}
+		
+		$objSheet1=$objPHPExcel->getActiveSheet('缴费平台明细');//获取活动工作表
+		$row = Db::name('jfshmx')->select();//获取数据
+		$j=4;
+		foreach($row as $key=>$val){
+			$objSheet1->setCellValue("C".$j,$val['jgname'])
+				->setCellValue("D".$j,$val['shname'])
+				->setCellValue("E".$j,$val['wsjyl'])
+				->setCellValue("K".$j,$val['yxjd']);
+				$j++;
+		}
+		
 		$objWrite=\PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');//生成Excel文件
 			//$objWrite->save("D:/wamp/www/public/uploads/export_2.xls");//保存文件
 		$this->browser_export('Excel5','browser_excel.xls');//输出到浏览器
@@ -416,5 +454,75 @@ class Home extends Controller
 				return $styleArray;
 		}
 
+	/**
+	 * 获取商户信息
+	 */
+	 public	function get_jfptsh(){
+	 	$page = $_GET['page']; // get the requested page
+		$limit = $_GET['rows']; // get how many rows we want to have into the grid
+		$sidx = $_GET['sidx']; // get index row - i.e. user click to sort
+		$sord = $_GET['sord']; // get the direction
+		if(!$sidx) $sidx =1;
+				
+		 // 检索数据库数据
+        $count = Db::name('yg')->count();
+			
+		if( $count >0 ) {
+			$total_pages = ceil($count/$limit);
+		} else {
+			$total_pages = 0;
+		}
+		if ($page > $total_pages) $page=$total_pages;
+		$start = $limit*$page - $limit; // do not put $limit*($page - 1)
+		$row = Db::name('yg')->paginate($limit);
+		
+		$responce = new \stdClass();
+		$responce->page = $page;
+		$responce->total = $total_pages;
+		$responce->records = $count;
+		$i=0;
+		for($i=0;$i<count($row); $i++) {
+		    $responce->rows[$i]['id']=$row[$i]['id'];
+		    $responce->rows[$i]['cell']=
+		    array(0,
+		    $row[$i]['id'],
+		    $row[$i]['username'],
+		    $row[$i]['password'],
+		    $row[$i]['tel'],
+		    $row[$i]['jgbh']);
+		    
+		}        
+		echo json_encode($responce);
+	 }
 
+	/**
+	 * 增、删、改商户信息
+	 */
+	public function put_jfptsh(){
+		
+		switch (input('post.oper'))
+		{
+			case 'edit':
+				Db::name('yg')->where('id',input('post.id'))->update([
+				'username'=>input('post.username'),
+				'tel'=>input('post.tel'),
+				'jgbh'=>input('post.jgbh')]
+				);
+				break;
+			case 'add':
+				Db::name('yg')->insert([
+				'username'=>input('post.username'),
+				'tel'=>input('post.tel'),
+				'jgbh'=>input('post.jgbh')]
+				);
+				break;
+			case 'del':
+				DB::name('yg')->delete(input('post.id'));
+				
+		}
+
+	}
 }
+
+
+

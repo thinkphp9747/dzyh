@@ -278,7 +278,7 @@
 								<img class="nav-user-photo" src="/public/assets/avatars/user.jpg" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
-									Jason
+									{$name}
 								</span>
 
 								<i class="icon-caret-down"></i>
@@ -302,7 +302,7 @@
 								<li class="divider"></li>
 
 								<li>
-									<a href="#">
+									<a href={:url("index/logOut")}>
 										<i class="icon-off"></i>
 										Logout
 									</a>
@@ -389,7 +389,7 @@
 										商户信息查询
 									</a>
 								</li>
-								{gt name="ygid" value="5"}
+								
 								<li>
 									<a href={:url("home/upjfsj")}>
 										<i class="icon-double-angle-right"></i>
@@ -403,9 +403,9 @@
 										悦生活数据上传
 									</a>
 								</li>
-								{/gt}
+								
 								<li>
-									<a href="nestable-list.html">
+									<a href="#">
 										<i class="icon-double-angle-right"></i>
 										代缴费业绩通报
 									</a>
@@ -443,11 +443,11 @@
 								</li>
 							</ul>
 						</li>
-						{gt name="ygid" value="5"}
+						
 						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-list"></i>
-								<span class="menu-text"> 待开发 </span>
+								<span class="menu-text"> 通报表 </span>
 
 								<b class="arrow icon-angle-down"></b>
 							</a>
@@ -456,14 +456,14 @@
 								<li>
 									<a href={:url("home/downloadfile")}>
 										<i class="icon-double-angle-right"></i>
-										下载文件
+										下载悦生活云服务申请表
 									</a>
 								</li>
 
 								<li>
 									<a href={:url("home/down_dbtb")}>
 										<i class="icon-double-angle-right"></i>
-										生成通报表
+										下载对标擂台赛通报表
 									</a>
 								</li>
 							</ul>
@@ -571,7 +571,7 @@
 								</li>
 							</ul>
 						</li>
-						{/gt}
+						
 					</ul><!-- /.nav-list -->
 
 					<div class="sidebar-collapse" id="sidebar-collapse">

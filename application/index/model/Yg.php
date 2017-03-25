@@ -4,7 +4,7 @@ use think\Model;    // 调用模型类
 /**
  * 员工模型类
  */
-class yg extends Model
+class Yg extends Model
 {
     /**
      * 用户登录
@@ -22,9 +22,9 @@ class yg extends Model
             // 验证密码是否正确
             if ($yg->checkPassword($password)) {
                 // 登录
-                session('ygId', $yg->getData('id'));
+                session('ygid', $yg->getData('id'));
                 session('name',$yg->getData('username'));
-				session('jgbh',$yg->getData('机构号'));
+				session('jgbh',$yg->getData('jgbh'));
                 
                 return true;
             }
@@ -80,10 +80,10 @@ class yg extends Model
      */
     static public function isLogin()
     {
-        $ygId = session('ygId');
+        $ygid = session('ygid');
     
         // isset()和is_null()是一对反义词
-        if (isset($ygId)) {
+        if (isset($ygid)) {
             return true;
         } else {
             return false;
